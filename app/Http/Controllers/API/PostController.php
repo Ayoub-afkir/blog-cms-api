@@ -18,7 +18,8 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required',
-            'status' => 'in:draft,published'
+            'status' => 'in:draft,published',
+            'image' => 'nullable|image|max:2048'
         ]);
 
         $post = Post::create([
@@ -27,6 +28,11 @@ class PostController extends Controller
             'body' => $request->body,
             'status' => $request->status ?? 'draft',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images/posts', 'public');
+            $post->image = $imagePath;
+        }
 
         return response()->json($post, 201);
     }
@@ -49,7 +55,7 @@ class PostController extends Controller
         return response()->json($post);
     }
 
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         $post = Post::findOrFail($id);
 
