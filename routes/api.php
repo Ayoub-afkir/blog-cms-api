@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,10 +36,18 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
-   Route::apiResource('posts', PostController::class);
+    Route::apiResource('posts', PostController::class);
+
+    Route::get('posts/{post}/comments', [CommentController::class, 'index']);
+    Route::post('posts/{post}/comments', [CommentController::class, 'store']);
+
+    Route::middleware('admin')->group(function () {
+        Route::put('comments/{comment}/approve', [CommentController::class, 'approve']);
+        Route::delete('comments/{comment}', [CommentController::class, 'destroy']);
+    });
 });
 
 
 
-
- 
+Route::apiResource('categories', CategoryController::class)->middleware('auth:sanctum');
+Route::apiResource('tags', TagController::class)->middleware('auth:sanctum');
