@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ActivityLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
@@ -51,3 +52,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::apiResource('categories', CategoryController::class)->middleware('auth:sanctum');
 Route::apiResource('tags', TagController::class)->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum', 'admin'])->get('activity-logs', [ActivityLogController::class, 'index']);
